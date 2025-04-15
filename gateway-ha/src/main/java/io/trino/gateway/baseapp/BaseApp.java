@@ -41,6 +41,7 @@ import io.trino.gateway.proxyserver.ForProxy;
 import io.trino.gateway.proxyserver.ProxyRequestHandler;
 import io.trino.gateway.proxyserver.RouteToBackendResource;
 import io.trino.gateway.proxyserver.RouterPreMatchContainerRequestFilter;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 import java.lang.reflect.Constructor;
@@ -195,6 +196,8 @@ public class BaseApp
         jaxrsBinder(binder).bind(RouteToBackendResource.class);
         jaxrsBinder(binder).bind(RouterPreMatchContainerRequestFilter.class);
         jaxrsBinder(binder).bind(ProxyRequestHandler.class);
+        // trust all certificates
+        binder.bind(SslContextFactory.Client.class).toInstance(new SslContextFactory.Client(true));
         httpClientBinder(binder).bindHttpClient("proxy", ForProxy.class);
         httpClientBinder(binder).bindHttpClient("monitor", ForMonitor.class);
         httpClientBinder(binder).bindHttpClient("router", ForRouter.class);
